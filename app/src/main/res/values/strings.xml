@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vibrate Awake</string>
+    <string name="notification_channel_name">Driver Alert Service</string>
+    <string name="notification_channel_desc">Keeps the anti-drowsiness vibration running in the background.</string>
+    <string name="notification_title">Vibrate Awake is active</string>
+    <string name="notification_text">Vibrating on interval to keep you awake.</string>
+    <string name="notification_stop">Stop</string>
+</resources>

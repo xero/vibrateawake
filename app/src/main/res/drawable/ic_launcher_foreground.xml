@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptive-icon foreground. The 108dp layer is inset by 18dp so the artwork
+    sits inside the 72dp safe zone; a round or squircle launcher mask never
+    clips the vibration waves at the edges.
+-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_launcher_art"
+    android:inset="18dp" />

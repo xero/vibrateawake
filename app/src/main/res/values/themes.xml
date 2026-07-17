@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Minimal window theme applied before Compose draws. NoActionBar because
+        Compose renders the entire UI itself. windowBackground points at a
+        night-qualified color, so it resolves to black in system dark mode and
+        white otherwise (no light flash on a dark-mode launch) without needing a
+        DayNight parent, which the framework Material theme does not provide.
+    -->
+    <style name="Theme.VibrateAwake" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_bg</item>
+    </style>
+</resources>

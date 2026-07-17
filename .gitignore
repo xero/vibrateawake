@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+/app/build/
+build/
+
+# Kotlin build artifact (Kotlin 2.x / AGP)
+.kotlin/
+
+# Signing keys and their config — never commit these
+*.jks
+*.keystore
+keystore.properties

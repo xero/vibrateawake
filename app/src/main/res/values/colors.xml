@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Pre-Compose window background. Light default; values-night flips it to black. -->
+    <color name="window_bg">#FFFFFFFF</color>
+</resources>
