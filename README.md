@@ -1,6 +1,7 @@
 # Vibrate Awake
 
-> [!NOTE]
+![Vibrate Awake](./store/feature-graphic.png)
+
 > A simple, offline Android app that buzzes your phone on a set interval to help
 > you stay alert on long drives, night shifts, and late trips home. Set it once,
 > press Start, and put the phone down; a foreground service keeps it vibrating
@@ -14,11 +15,14 @@
 > - [What it does](#what-it-does)
 > - [Settings](#settings)
 > - [How it works](#how-it-works)
+> - [Screenshots](#screenshots)
+> - [Play Store beta testing](#play-store-beta-testing)
 > - [Project layout](#project-layout)
 > - [Build and run](#build-and-run)
 > - [Toolchain](#toolchain)
 > - [Design notes](#design-notes)
 > - [Privacy](#privacy)
+> - [License](#license)
 
 ---
 
@@ -69,6 +73,36 @@ The Fatigue Level label reads "Drag the slider for a custom time interval" while
 **`MainViewModel` and `SettingsRepository`** hold the config as a `StateFlow` backed by DataStore, and expose start and stop. **`ServiceState`** is a small singleton `StateFlow<Boolean>` the service flips so the UI knows whether to show Start or Stop.
 
 **`MainActivity`** hosts the Compose UI and handles the runtime prompts: it requests `POST_NOTIFICATIONS` on Android 13+ and offers the battery-optimization exemption the first time you press Start. It also renders the in-app privacy policy (reached from the shield icon) and opens the contact links in the default browser with no referrer.
+
+---
+
+## Screenshots
+
+| Main screen | Custom options | Running, locked |
+| --- | --- | --- |
+| ![Main screen](./store/screenshots/01-main-dark.png) | ![Custom options](./store/screenshots/02-options.png) | ![Running and locked](./store/screenshots/03-running.png) |
+
+| Privacy policy | Notification | Light theme |
+| --- | --- | --- |
+| ![Privacy policy](./store/screenshots/04-privacy.png) | ![Notification](./store/screenshots/05-notification.png) | ![Light theme](./store/screenshots/06-main-light.png) |
+
+---
+
+## Play Store beta testing
+
+The app is in closed testing on Google Play, so access is invite-only and takes two steps.
+
+**1. Join the testers group.** The group is public, but its membership list is private, so you will not see other members. Join at [groups.google.com/g/vibrate-awake-testing](https://groups.google.com/g/vibrate-awake-testing).
+
+**2. Opt in and install.** Once you are in the group, use either link with the same Google account:
+
+- Android: [play.google.com/store/apps/details?id=style.xero.vibrateawake](https://play.google.com/store/apps/details?id=style.xero.vibrateawake)
+- Web: [play.google.com/apps/testing/style.xero.vibrateawake](https://play.google.com/apps/testing/style.xero.vibrateawake)
+
+The Play links only work for accounts that have joined the group first.
+
+> [!IMPORTANT]
+> We need 12 testers to keep the app installed for 14 days to pass beta testing and you only _need_ to run it once. Your testing support helps get this app to the Play Store as a free tool for everyone.
 
 ---
 
@@ -180,3 +214,9 @@ validated against 26. The relevant environment lives in
 Vibrate Awake collects no data, has no network access, and contains no ads or
 tracking. Your settings stay in the app's private storage on the device. See
 [PRIVACY.md](./PRIVACY.md) for the full policy.
+
+---
+
+## License
+
+**Vibrate Awake** is released under the [MIT License](./LICENSE.txt), by [xero](https://x-e.ro)
