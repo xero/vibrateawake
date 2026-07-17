@@ -1,0 +1,23 @@
+Vibrate Awake is a simple, offline tool that buzzes your phone on a set interval to help you stay alert on long drives, night shifts, and late trips home. Set it once, press Start, and put your phone down. It keeps vibrating on its own, even with the screen off and the phone locked, until you stop it. There is nothing to tap or dismiss while you drive.
+
+HOW IT WORKS
+Choose how often you want a buzz and what it should feel like, then press Start. The vibration fires right away so you know what to expect, then repeats on your interval. To keep your brain from tuning it out, the timing shifts by a few seconds each cycle, and a faint heads-up pulse comes about 15 seconds before each full alert so you are never startled.
+
+SETTINGS
+- Interval: pick 3, 5, or 10 minutes, or set anything from 1 to 25 minutes.
+- Rhythm: Staccato (an escalating heartbeat), SOS Pulse (three quick jabs), or Continuous Wave (a rising and falling siren).
+- Intensity: Standard uses each rhythm's natural soft-to-strong curve, or Maximum fires every pulse at full strength.
+
+Your settings are remembered for next time.
+
+BUILT TO STAY OUT OF YOUR WAY
+- Runs while locked. A foreground service keeps the vibration going with the screen off.
+- No interaction needed. Once it is running, the only thing left to do is stop it.
+- Strong, reliable alerts. Vibrations play as alarms, so they are not weakened or muted by Do Not Disturb.
+- A clean, high-contrast screen that follows your light or dark theme.
+
+PRIVACY
+Vibrate Awake collects nothing. No accounts, no analytics, no ads, no tracking, and no internet access at all. Your settings never leave your phone.
+
+PLEASE DRIVE RESPONSIBLY
+Vibrate Awake is an aid, not a substitute for rest. It cannot prevent fatigue or keep you safe on its own. If you are tired, the right move is to pull over and rest. Never rely on this app, or any app, to keep driving when you should stop.

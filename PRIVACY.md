@@ -30,7 +30,7 @@ your device even in principle.
 
 ## What stays on your device
 
-Your three settings (interval, vibration rhythm, and road-noise level) are saved
+Your three settings (interval, vibration rhythm, and intensity level) are saved
 locally so the app remembers your last choices. This preference file lives in
 the app's private storage on your phone. It never leaves the device, and it is
 removed when you uninstall the app.

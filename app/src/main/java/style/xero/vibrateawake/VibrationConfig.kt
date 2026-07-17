@@ -16,13 +16,14 @@ enum class PatternStyle {
     }
 }
 
+// Vibration intensity. Enum name kept for stable DataStore/Intent ordinals.
 enum class RoadNoise {
-    ADAPTIVE,   // use the pattern's ascending amplitudes as-is
-    MAX_HEAVY,  // force every active pulse to full 255 to punch through cabin noise
+    ADAPTIVE,   // Standard: use each pattern's natural amplitude curve (soft to strong)
+    MAX_HEAVY,  // Maximum: force every active pulse to full 255
 }
 
 data class VibrationConfig(
-    val intervalMinutes: Double = 3.0,          // 1.0 to 10.0
+    val intervalMinutes: Double = 3.0,          // 1.0 to 25.0
     val pattern: PatternStyle = PatternStyle.STACCATO,
     val roadNoise: RoadNoise = RoadNoise.ADAPTIVE,
 )

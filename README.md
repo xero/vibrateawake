@@ -1,11 +1,12 @@
 # Vibrate Awake
 
 > [!NOTE]
-> An Android app that vibrates your phone on a randomized interval to keep a
-> drowsy driver awake. Set an interval, a rhythm, and an intensity, press Start,
-> and a foreground service keeps buzzing even while the phone is locked. No
-> interaction is needed once it is running. This file records what it does, how
-> it is built, and how to run it.
+> A simple, offline Android app that buzzes your phone on a set interval to help
+> you stay alert on long drives, night shifts, and late trips home. Set it once,
+> press Start, and put the phone down; a foreground service keeps it vibrating
+> even with the screen off and locked, until you press Stop. Nothing to tap or
+> dismiss while you drive. This file documents what it does, how it is built,
+> and how to run it.
 
 ---
 
@@ -24,46 +25,50 @@
 ## What it does
 
 The whole app is one screen: a settings form with three knobs and a large
-Start/Stop button across the bottom. Press Start and the app vibrates your
-phone on an interval to fight microsleep. Press Stop, in the app or from the
-notification, and it ends.
+Start/Stop button across the bottom. Press Start and it buzzes your phone on
+your chosen interval to help you stay alert on long drives, night shifts, and
+late trips home. Press Stop, in the app or from the notification, and it ends.
 
-The design is deliberately distraction-free. There is nothing to dismiss, tap,
-or acknowledge while driving. It just vibrates.
+The design is deliberately distraction-free. There is nothing to tap or dismiss
+while you drive. It just vibrates.
+
+The published Play Store listing text lives in
+[store/listing/full-description.txt](./store/listing/full-description.txt), with
+the short description and title alongside it.
 
 - **Fires immediately.** Start plays your chosen pattern at once, so you feel exactly what you picked before setting off.
 - **Runs locked.** A foreground service keeps the vibration going with the screen off and the phone locked.
 - **Fights habituation.** The interval is jittered by up to 15 seconds each cycle so your brain cannot anticipate the buzz, and a faint pre-warn pulse fires about 15 seconds before each main alert so a hard buzz never startles you mid-steer.
-- **Greyscale.** Black and white, following the system light or dark setting. The title and Start/Stop button use the embedded Thunderline font; everything else is Roboto.
+- **Greyscale with an orange accent.** A black-and-white UI that follows the system light or dark setting. A fixed orange (`#D16A00`) picks out the title, the slider fill, the selected options, and the Stop button while running. The title and Start/Stop button use the embedded Thunderline font; everything else is Roboto.
 
 ---
 
 ## Settings
 
-**Fatigue Level.** How often it buzzes. Presets of 3, 5, and 10 minutes, plus a slider from 1 to 10 minutes in 30-second steps. The short end is "Extreme Fatigue", the long end "Preventative". Default is 3 minutes.
+**Fatigue Level.** How often it buzzes. Presets of 3, 5, and 10 minutes, plus a slider from 1 to 25 minutes in 30-second steps. The short end is "Extreme Fatigue", the long end "Preventative". Default is 3 minutes.
 
 **Vibration Rhythm.** The waveform of each alert.
 - **Staccato** (default): an escalating heartbeat, soft then medium then a hard final burst.
 - **SOS Pulse**: three quick maximum-intensity jabs.
 - **Continuous Wave**: a rising and falling siren.
 
-**Road Noise Level.** How hard the pulses hit.
-- **Standard (Adaptive)** (default): uses the pattern's ascending amplitudes, gentle to strong.
-- **Heavy Cabin Noise (Max Power)**: forces every active pulse to full 255 amplitude to punch through a loud, bumpy cabin.
+**Vibration Intensity.** How hard the pulses hit.
+- **Standard** (default): uses each rhythm's natural amplitude curve, gentle to strong.
+- **Maximum**: fires every active pulse at full 255 amplitude.
 
-Settings persist across launches. While the service is running the controls lock, so the only action left is Stop.
+The Fatigue Level label reads "Drag the slider for a custom time interval" while a preset is selected, then switches to "Custom time interval: X mins" once you move the slider off a preset. Settings persist across launches. While the service is running every control dims and locks, leaving the orange Stop button as the only action.
 
 ---
 
 ## How it works
 
-**`VibrationEngine`** owns the schedule. It runs on the main looper, computes the next delay as `interval ± up to 15s` with a 30-second floor, schedules a faint pre-warn one-shot 15 seconds ahead of each main alert, then plays the selected waveform with `VibrationEffect.createWaveform`. Max Power rewrites every active amplitude to 255.
+**`VibrationEngine`** owns the schedule. It runs on the main looper, computes the next delay as `interval ± up to 15s` with a 30-second floor, schedules a faint pre-warn one-shot 15 seconds ahead of each main alert, then plays the selected waveform with `VibrationEffect.createWaveform`. The Maximum intensity rewrites every active amplitude to 255.
 
 **`VibrateAwakeService`** is a foreground service that houses the engine and a partial wake lock, so alerts keep firing under Doze and while locked. It reads the config from the launch intent's extras, posts an ongoing low-importance notification with a Stop action, and returns `START_REDELIVER_INTENT` so the config survives a process restart.
 
 **`MainViewModel` and `SettingsRepository`** hold the config as a `StateFlow` backed by DataStore, and expose start and stop. **`ServiceState`** is a small singleton `StateFlow<Boolean>` the service flips so the UI knows whether to show Start or Stop.
 
-**`MainActivity`** hosts the Compose UI and handles the runtime prompts: it requests `POST_NOTIFICATIONS` on Android 13+ and offers the battery-optimization exemption the first time you press Start.
+**`MainActivity`** hosts the Compose UI and handles the runtime prompts: it requests `POST_NOTIFICATIONS` on Android 13+ and offers the battery-optimization exemption the first time you press Start. It also renders the in-app privacy policy (reached from the shield icon) and opens the contact links in the default browser with no referrer.
 
 ---
 
@@ -78,6 +83,7 @@ vibrateawake/
 │   └── wrapper/                      Pinned Gradle 9.6.1 wrapper
 ├── gradlew                           Wrapper launcher (use this to build)
 ├── local.properties                  SDK path; machine-specific, not committed
+├── store/                            Play listing text, screenshots, feature graphic
 └── app/
     ├── build.gradle.kts              The app module build script
     └── src/main/
@@ -93,7 +99,7 @@ vibrateawake/
         │   └── ui/theme/             Greyscale Material 3 theme, color, type
         └── res/
             ├── font/thunderline.ttf  Embedded display font (title + button)
-            ├── drawable-nodpi/        Launcher illustration
+            ├── drawable-nodpi/        Launcher illustration + privacy shield icon
             ├── drawable/              Icon layers + notification small icon
             ├── mipmap-anydpi-v26/     Adaptive launcher icon
             └── values, values-night/  Strings, window theme, colors
@@ -159,7 +165,11 @@ validated against 26. The relevant environment lives in
 
 **AGP 9 built-in Kotlin.** AGP 9.0 folded Kotlin into the Android plugin, so there is no `org.jetbrains.kotlin.android` plugin. Only `com.android.application` and the Compose compiler plugin are applied, and the Compose plugin is pinned to Kotlin 2.2.10 to match the version AGP 9.3.0 bundles. A mismatch there breaks the build.
 
-**Greyscale theme.** Material You dynamic color is turned off. The color scheme maps background and text to black, white, and off-tones (`#222` and `#efefef`), with a grey accent for the button and controls. `surfaceVariant` and related roles are pinned to greys so the slider and radio buttons never leak the default purple tint.
+**Greyscale with an orange accent.** Material You dynamic color is turned off. The scheme maps background and text to black, white, and off-tones (`#222` and `#efefef`), and `surfaceVariant` and related roles are pinned to greys so nothing leaks the default purple tint. The one accent is orange (`#D16A00`, chosen to read on both black and white): the title, the slider active fill, selected radio buttons, and the Stop button while running. Locked controls dim, and a selected control's orange fades to `#BE5900`.
+
+**Portrait lock.** `MainActivity` sets `android:screenOrientation="portrait"`. The single-column form is built for portrait and this is a set-and-forget utility, so the app stays upright instead of reflowing awkwardly in landscape.
+
+**In-app privacy policy.** The shield icon opens a privacy screen that replaces the form while keeping the title, rendered as native Compose text. Its links open in the default browser via `ACTION_VIEW` with `EXTRA_REFERRER` cleared, so the destination gets no app referrer.
 
 **Permissions.** `VIBRATE`, `WAKE_LOCK`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SPECIAL_USE`, `POST_NOTIFICATIONS`, and `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`. The notification permission is requested at runtime on Android 13+, and the battery-optimization exemption is offered the first time you press Start so the OS does not throttle the timer.
 
