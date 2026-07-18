@@ -5,7 +5,7 @@
 > offline timer that vibrates your phone. Everything it does stays on your
 > device.
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18
 
 ---
 
@@ -20,20 +20,28 @@ no accounts, no analytics, no advertising, and no network access.
 ## What we collect
 
 Nothing. The app gathers no personal information, no usage data, no device
-identifiers, and no location. It does not contain analytics, crash reporting,
-advertising, or any third-party SDK that would gather data.
+identifiers, and no location. It contains no analytics, no crash reporting, no
+advertising, and no tracking SDK of any kind.
 
-The app declares no internet permission, so it has no ability to send data off
-your device even in principle.
+The app declares no internet permission, so it cannot send anything to the
+internet, even in principle. The one component that talks to another device is
+the Google Play Services Wearable link used to reach a paired Wear OS watch,
+described below. It carries only your vibration settings, only to your own
+watch, and never to any server.
 
 ---
 
 ## What stays on your device
 
-Your three settings (interval, vibration rhythm, and intensity level) are saved
+Your four settings (interval, vibration rhythm, intensity, and length) are saved
 locally so the app remembers your last choices. This preference file lives in
-the app's private storage on your phone. It never leaves the device, and it is
-removed when you uninstall the app.
+the app's private storage on your phone and is removed when you uninstall the app.
+
+If you use the Wear OS companion, those same settings are sent to your paired
+watch so it can vibrate on the same schedule. They travel over the local Google
+Play Services device-to-device link, are stored in the watch app's private
+storage, and go no further. No settings, and no other data, ever reach a server
+or any third party.
 
 ---
 
@@ -49,12 +57,19 @@ Each permission serves the core timer, not data collection.
 
 None of these permissions read contacts, files, location, or any personal data.
 
+The Wear OS companion uses the same kinds of permissions on the watch (vibrate,
+wake lock, foreground service, and an exact-alarm permission that drives its own
+timer), all for the same purpose and none for data collection.
+
 ---
 
 ## Ads, tracking, and third parties
 
-There are no ads, no tracking, no in-app purchases, and no third-party services.
-No data is shared with anyone, because none is collected.
+There are no ads, no tracking, no in-app purchases, and no analytics or
+advertising services. The only third-party component is Google Play Services,
+and only its Wearable API, used solely to relay your vibration settings to a
+paired watch over the local device link. No data is shared with any server or
+outside party, because none is collected and nothing leaves your own devices.
 
 ---
 

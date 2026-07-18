@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "VibrateAwake"
 include(":app")
+include(":core")
+include(":wear")

@@ -62,6 +62,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import style.xero.vibrateawake.core.PatternStyle
+import style.xero.vibrateawake.core.RoadNoise
+import style.xero.vibrateawake.core.VibrationConfig
 import style.xero.vibrateawake.ui.theme.SliderTrackGrey
 import style.xero.vibrateawake.ui.theme.Thunderline
 import style.xero.vibrateawake.ui.theme.TitleOrange
@@ -456,9 +459,10 @@ private fun PrivacyScreen(
         PrivacyH2("What stays on your device")
         PrivacyBody(
             "Your four settings (interval, vibration rhythm, intensity, and length) are saved " +
-                "locally so the app remembers your last choices. This preference file lives in the " +
-                "app's private storage on your phone. It never leaves the device, and it is removed " +
-                "when you uninstall the app.",
+                "locally so the app remembers your last choices, and are removed when you uninstall " +
+                "the app. If you use a paired Wear OS watch, these settings are sent to it over the " +
+                "local device link so it can buzz on the same schedule; they never reach a server " +
+                "or any third party.",
         )
 
         PrivacyRule()

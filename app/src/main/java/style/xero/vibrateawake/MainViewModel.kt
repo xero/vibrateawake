@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import style.xero.vibrateawake.core.PatternStyle
+import style.xero.vibrateawake.core.RoadNoise
+import style.xero.vibrateawake.core.VibrationConfig
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 

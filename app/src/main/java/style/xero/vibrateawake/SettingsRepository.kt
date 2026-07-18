@@ -9,11 +9,14 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import style.xero.vibrateawake.core.PatternStyle
+import style.xero.vibrateawake.core.RoadNoise
+import style.xero.vibrateawake.core.VibrationConfig
 
 // One DataStore for the whole process; the delegate lazily creates it per Context.
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-// Persists the three knobs so the last-used config is restored on the next launch.
+// Persists the four knobs so the last-used config is restored on the next launch.
 class SettingsRepository(private val context: Context) {
 
     val config: Flow<VibrationConfig> = context.dataStore.data.map { prefs ->

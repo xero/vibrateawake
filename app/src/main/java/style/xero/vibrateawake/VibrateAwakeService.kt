@@ -13,6 +13,9 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
+import style.xero.vibrateawake.core.PatternStyle
+import style.xero.vibrateawake.core.RoadNoise
+import style.xero.vibrateawake.core.VibrationConfig
 
 // Foreground service that houses the vibration engine and a partial wake lock, so
 // the alerts keep firing while the phone is locked. Stopped in-app or from the
@@ -20,11 +23,13 @@ import androidx.core.app.NotificationCompat
 class VibrateAwakeService : Service() {
 
     private lateinit var engine: VibrationEngine
+    private lateinit var watchBridge: WatchSessionBridge
     private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
         engine = VibrationEngine(this)
+        watchBridge = WatchSessionBridge(this)
         createNotificationChannel()
     }
 
@@ -39,6 +44,8 @@ class VibrateAwakeService : Service() {
         startAsForeground()
         acquireWakeLock()
         engine.start(config)
+        // Tell any paired watch running the companion to start its own local schedule.
+        watchBridge.start(config)
         ServiceState.setRunning(true)
 
         // Redeliver the config-bearing intent if the process is killed and restarted.
@@ -47,6 +54,7 @@ class VibrateAwakeService : Service() {
 
     override fun onDestroy() {
         engine.stop()
+        watchBridge.stop()
         releaseWakeLock()
         ServiceState.setRunning(false)
         super.onDestroy()

@@ -1,14 +1,18 @@
-Vibrate Awake is a simple, offline tool that buzzes your phone on a set interval to help you stay alert on long drives, night shifts, and late trips home. Set it once, press Start, and put your phone down. It keeps vibrating on its own, even with the screen off and the phone locked, until you stop it. There is nothing to tap or dismiss while you drive.
+Vibrate Awake is a simple, offline vibration alarm that buzzes your phone on a set interval to help you stay alert on long drives, night shifts, and late trips home. Set it once, press Start, and put your phone down. It keeps vibrating on its own, even with the screen off and the phone locked, until you stop it. There is nothing to tap or dismiss while you drive.
 
 HOW IT WORKS
-Choose how often you want a buzz and what it should feel like, then press Start. The vibration fires right away so you know what to expect, then repeats on your interval. To keep your brain from tuning it out, the timing shifts by a few seconds each cycle, and a faint heads-up pulse comes about 15 seconds before each full alert so you are never startled.
+Choose how often you want a buzz and what it should feel like, then press Start. The alarm fires right away so you know what to expect, then repeats on your interval. To keep your brain from tuning it out, the timing shifts by a few seconds each cycle, and a faint heads-up pulse comes about 15 seconds before each alarm so you are never startled.
 
 SETTINGS
-- Interval: pick 3, 5, or 10 minutes, or set anything from 1 to 25 minutes.
+- Interval: anything from 1 to 25 minutes.
 - Rhythm: Staccato (an escalating heartbeat), SOS Pulse (three quick jabs), or Continuous Wave (a rising and falling siren).
 - Intensity: Standard uses each rhythm's natural soft-to-strong curve, or Maximum fires every pulse at full strength.
+- Length: how long each buzz runs, from short to long. A longer buzz also feels stronger.
 
 Your settings are remembered for next time.
+
+WEAR OS SUPPORT
+If a Wear OS watch is paired, it buzzes your wrist on the same schedule as your phone, automatically. There is nothing to install by hand and nothing to tap on the watch.
 
 BUILT TO STAY OUT OF YOUR WAY
 - Runs while locked. A foreground service keeps the vibration going with the screen off.

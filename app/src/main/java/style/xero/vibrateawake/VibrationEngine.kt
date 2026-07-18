@@ -8,8 +8,10 @@ import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import kotlin.math.roundToLong
 import kotlin.random.Random
+import style.xero.vibrateawake.core.VibrationConfig
+import style.xero.vibrateawake.core.VibrationTiming
+import style.xero.vibrateawake.core.buildWaveform
 
 // Drives the vibration schedule for one active session. All scheduling runs on
 // the main looper via Handler callbacks, which is the timer source.
@@ -75,40 +77,25 @@ class VibrationEngine(context: Context) {
 
         val baseMs = (config.intervalMinutes * 60_000).toLong()
         // Anti-habituation: +/- up to 15s so the brain can't anticipate the pulse.
-        val jitter = Random.nextLong(-RANDOM_WINDOW_MS, RANDOM_WINDOW_MS + 1)
-        val nextDelay = (baseMs + jitter).coerceAtLeast(MIN_DELAY_MS)
+        val jitter = Random.nextLong(-VibrationTiming.RANDOM_WINDOW_MS, VibrationTiming.RANDOM_WINDOW_MS + 1)
+        val nextDelay = (baseMs + jitter).coerceAtLeast(VibrationTiming.MIN_DELAY_MS)
 
-        val preDelay = nextDelay - PRE_WARN_LEAD_MS
+        val preDelay = nextDelay - VibrationTiming.PRE_WARN_LEAD_MS
         if (preDelay > 0) handler.postDelayed(preWarn, preDelay)
         handler.postDelayed(mainAlert, nextDelay)
     }
 
     private fun firePreWarnPulse() {
         if (!vibrator.hasVibrator()) return
-        vibrator.vibrate(VibrationEffect.createOneShot(PRE_WARN_MS, PRE_WARN_AMPLITUDE), alarmAttributes)
+        vibrator.vibrate(
+            VibrationEffect.createOneShot(VibrationTiming.PRE_WARN_MS, VibrationTiming.PRE_WARN_AMPLITUDE),
+            alarmAttributes,
+        )
     }
 
     private fun fireMainVibration() {
         if (!vibrator.hasVibrator()) return
-        val (baseTimings, amplitudes) = config.pattern.waveform()
-        // Uniform stretch: scale every segment (buzz and gap alike) so the rhythm's
-        // proportions are preserved and only its overall length changes.
-        val scale = config.durationScale
-        val timings = LongArray(baseTimings.size) { i -> (baseTimings[i] * scale).roundToLong() }
-        val finalAmplitudes = if (config.roadNoise == RoadNoise.MAX_HEAVY) {
-            // Strip the gentle ascending slopes; every active step fires at full power.
-            IntArray(amplitudes.size) { i -> if (amplitudes[i] > 0) 255 else 0 }
-        } else {
-            amplitudes
-        }
-        vibrator.vibrate(VibrationEffect.createWaveform(timings, finalAmplitudes, -1), alarmAttributes)
-    }
-
-    companion object {
-        private const val RANDOM_WINDOW_MS = 15_000L   // +/- jitter around the interval
-        private const val MIN_DELAY_MS = 30_000L       // never fire sooner than 30s
-        private const val PRE_WARN_LEAD_MS = 15_000L   // faint pulse this far ahead of the alert
-        private const val PRE_WARN_MS = 100L           // faint pulse duration
-        private const val PRE_WARN_AMPLITUDE = 60      // low amplitude (of 255)
+        val (timings, amplitudes) = config.buildWaveform()
+        vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1), alarmAttributes)
     }
 }

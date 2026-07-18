@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vibrate Awake</string>
+    <string name="notification_channel_name">Driver Alert (Watch)</string>
+    <string name="notification_title">Vibrate Awake is active</string>
+    <string name="notification_text">Vibrating on interval to keep you awake.</string>
+</resources>
