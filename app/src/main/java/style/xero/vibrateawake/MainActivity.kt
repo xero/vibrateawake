@@ -87,6 +87,7 @@ class MainActivity : ComponentActivity() {
                     onIntervalChange = vm::setInterval,
                     onPatternChange = vm::setPattern,
                     onRoadNoiseChange = vm::setRoadNoise,
+                    onDurationScaleChange = vm::setDurationScale,
                     onStart = vm::start,
                     onStop = vm::stop,
                 )
@@ -102,6 +103,7 @@ private fun VibrateAwakeScreen(
     onIntervalChange: (Double) -> Unit,
     onPatternChange: (PatternStyle) -> Unit,
     onRoadNoiseChange: (RoadNoise) -> Unit,
+    onDurationScaleChange: (Double) -> Unit,
     onStart: () -> Unit,
     onStop: () -> Unit,
 ) {
@@ -153,7 +155,7 @@ private fun VibrateAwakeScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp),
                 ) {
-                    FatigueSection(
+                    IntervalSection(
                         intervalMinutes = config.intervalMinutes,
                         enabled = !isRunning,
                         onIntervalChange = onIntervalChange,
@@ -178,6 +180,11 @@ private fun VibrateAwakeScreen(
                         selected = config.roadNoise,
                         enabled = !isRunning,
                         onSelect = onRoadNoiseChange,
+                    )
+                    LengthSection(
+                        durationScale = config.durationScale,
+                        enabled = !isRunning,
+                        onDurationScaleChange = onDurationScaleChange,
                     )
                 }
 
@@ -223,29 +230,14 @@ private fun VibrateAwakeScreen(
 }
 
 @Composable
-private fun FatigueSection(
+private fun IntervalSection(
     intervalMinutes: Double,
     enabled: Boolean,
     onIntervalChange: (Double) -> Unit,
 ) {
-    val presets = listOf(3.0 to "3 Min", 5.0 to "5 Min", 10.0 to "10 Min")
-    SectionHeader("Fatigue Level", enabled)
-
-    RadioColumn(
-        options = presets,
-        selected = presets.map { it.first }.firstOrNull { it == intervalMinutes },
-        enabled = enabled,
-        onSelect = onIntervalChange,
-    )
-
-    val onPreset = presets.any { it.first == intervalMinutes }
+    SectionHeader("Vibration Interval", enabled)
     Text(
-        text = if (onPreset) {
-            "Drag the slider for a custom time interval"
-        } else {
-            "Custom time interval: ${formatMinutes(intervalMinutes)} " +
-                if (intervalMinutes == 1.0) "min" else "mins"
-        },
+        text = "${formatMinutes(intervalMinutes)} " + if (intervalMinutes == 1.0) "min" else "mins",
         color = dim(MaterialTheme.colorScheme.onBackground, enabled),
         modifier = Modifier.padding(top = 8.dp),
     )
@@ -261,12 +253,50 @@ private fun FatigueSection(
             inactiveTrackColor = SliderTrackGrey,
         ),
     )
+    // Quarter marks across the 1..25 range so the slider explains its own scale.
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Caption("Extreme Fatigue", enabled)
-        Caption("Preventative", enabled)
+        Caption("1 min", enabled)
+        Caption("7 min", enabled)
+        Caption("13 min", enabled)
+        Caption("19 min", enabled)
+        Caption("25 min", enabled)
+    }
+}
+
+@Composable
+private fun LengthSection(
+    durationScale: Double,
+    enabled: Boolean,
+    onDurationScaleChange: (Double) -> Unit,
+) {
+    SectionHeader("Vibration Length", enabled)
+    Text(
+        text = "Duration: ${formatDuration(durationScale)}",
+        color = dim(MaterialTheme.colorScheme.onBackground, enabled),
+        modifier = Modifier.padding(top = 8.dp),
+    )
+    Slider(
+        value = durationScale.toFloat(),
+        // Internal 1.0..8.0 is the raw waveform multiplier; shown re-anchored so the
+        // tester-approved 2.0 baseline reads as "1×" (see formatDuration). Whole steps.
+        onValueChange = { onDurationScaleChange(it.roundToInt().toDouble()) },
+        valueRange = 1f..8f,
+        enabled = enabled,
+        colors = SliderDefaults.colors(
+            thumbColor = TitleOrange,
+            activeTrackColor = TitleOrange,
+            inactiveTrackColor = SliderTrackGrey,
+        ),
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Caption("Short", enabled)
+        Caption("Long", enabled)
     }
 }
 
@@ -347,6 +377,17 @@ private fun Caption(text: String, enabled: Boolean = true) {
 private fun formatMinutes(value: Double): String =
     if (value % 1.0 == 0.0) value.toInt().toString() else value.toString()
 
+// The stored durationScale is the raw waveform multiplier. The UI shows it re-anchored
+// so the 2.0 default reads as "1×": 1.0 -> "1/2", 4.0 -> "2×", 8.0 -> "4×".
+private fun formatDuration(durationScale: Double): String {
+    val shown = durationScale / 2.0
+    return when {
+        shown == 0.5 -> "1/2"
+        shown % 1.0 == 0.0 -> "${shown.toInt()}×"
+        else -> "$shown×"
+    }
+}
+
 // Fade a color toward the background when a control is locked (service running).
 private fun dim(color: Color, enabled: Boolean): Color =
     if (enabled) color else color.copy(alpha = 0.38f)
@@ -414,7 +455,7 @@ private fun PrivacyScreen(
         PrivacyRule()
         PrivacyH2("What stays on your device")
         PrivacyBody(
-            "Your three settings (interval, vibration rhythm, and intensity level) are saved " +
+            "Your four settings (interval, vibration rhythm, intensity, and length) are saved " +
                 "locally so the app remembers your last choices. This preference file lives in the " +
                 "app's private storage on your phone. It never leaves the device, and it is removed " +
                 "when you uninstall the app.",

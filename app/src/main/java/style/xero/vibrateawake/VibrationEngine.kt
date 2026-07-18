@@ -8,6 +8,7 @@ import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import kotlin.math.roundToLong
 import kotlin.random.Random
 
 // Drives the vibration schedule for one active session. All scheduling runs on
@@ -89,7 +90,11 @@ class VibrationEngine(context: Context) {
 
     private fun fireMainVibration() {
         if (!vibrator.hasVibrator()) return
-        val (timings, amplitudes) = config.pattern.waveform()
+        val (baseTimings, amplitudes) = config.pattern.waveform()
+        // Uniform stretch: scale every segment (buzz and gap alike) so the rhythm's
+        // proportions are preserved and only its overall length changes.
+        val scale = config.durationScale
+        val timings = LongArray(baseTimings.size) { i -> (baseTimings[i] * scale).roundToLong() }
         val finalAmplitudes = if (config.roadNoise == RoadNoise.MAX_HEAVY) {
             // Strip the gentle ascending slopes; every active step fires at full power.
             IntArray(amplitudes.size) { i -> if (amplitudes[i] > 0) 255 else 0 }

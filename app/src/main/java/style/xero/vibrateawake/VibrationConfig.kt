@@ -26,4 +26,8 @@ data class VibrationConfig(
     val intervalMinutes: Double = 3.0,          // 1.0 to 25.0
     val pattern: PatternStyle = PatternStyle.STACCATO,
     val roadNoise: RoadNoise = RoadNoise.ADAPTIVE,
+    // Uniformly time-stretches the selected rhythm so each buzz runs longer (and,
+    // via temporal summation, feels stronger). 1.0 is the raw waveform; default 2.0
+    // is twice as long, matching tester feedback that the alerts were too short.
+    val durationScale: Double = 2.0,            // 1.0 to 3.0
 )

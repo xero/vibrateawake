@@ -24,6 +24,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun setInterval(minutes: Double) = persist { it.copy(intervalMinutes = minutes) }
     fun setPattern(pattern: PatternStyle) = persist { it.copy(pattern = pattern) }
     fun setRoadNoise(roadNoise: RoadNoise) = persist { it.copy(roadNoise = roadNoise) }
+    fun setDurationScale(scale: Double) = persist { it.copy(durationScale = scale) }
 
     private fun persist(transform: (VibrationConfig) -> VibrationConfig) {
         viewModelScope.launch { repo.update(transform(config.value)) }

@@ -21,6 +21,8 @@ class SettingsRepository(private val context: Context) {
             intervalMinutes = prefs[KEY_INTERVAL] ?: 3.0,
             pattern = PatternStyle.entries[prefs[KEY_PATTERN] ?: PatternStyle.STACCATO.ordinal],
             roadNoise = RoadNoise.entries[prefs[KEY_ROAD_NOISE] ?: RoadNoise.ADAPTIVE.ordinal],
+            // Absent for testers upgrading from an older build, so the 2.0 default applies.
+            durationScale = prefs[KEY_DURATION_SCALE] ?: 2.0,
         )
     }
 
@@ -29,6 +31,7 @@ class SettingsRepository(private val context: Context) {
             prefs[KEY_INTERVAL] = config.intervalMinutes
             prefs[KEY_PATTERN] = config.pattern.ordinal
             prefs[KEY_ROAD_NOISE] = config.roadNoise.ordinal
+            prefs[KEY_DURATION_SCALE] = config.durationScale
         }
     }
 
@@ -36,5 +39,6 @@ class SettingsRepository(private val context: Context) {
         val KEY_INTERVAL = doublePreferencesKey("interval_minutes")
         val KEY_PATTERN = intPreferencesKey("pattern")
         val KEY_ROAD_NOISE = intPreferencesKey("road_noise")
+        val KEY_DURATION_SCALE = doublePreferencesKey("duration_scale")
     }
 }

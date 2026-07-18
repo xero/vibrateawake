@@ -123,7 +123,8 @@ class VibrateAwakeService : Service() {
         val roadNoise = RoadNoise.entries[
             intent.getIntExtra(EXTRA_ROAD_NOISE, RoadNoise.ADAPTIVE.ordinal),
         ]
-        return VibrationConfig(interval, pattern, roadNoise)
+        val durationScale = intent.getDoubleExtra(EXTRA_DURATION_SCALE, 2.0)
+        return VibrationConfig(interval, pattern, roadNoise, durationScale)
     }
 
     companion object {
@@ -132,6 +133,7 @@ class VibrateAwakeService : Service() {
         private const val EXTRA_INTERVAL = "extra_interval_minutes"
         private const val EXTRA_PATTERN = "extra_pattern"
         private const val EXTRA_ROAD_NOISE = "extra_road_noise"
+        private const val EXTRA_DURATION_SCALE = "extra_duration_scale"
 
         private const val CHANNEL_ID = "vibrate_awake_service"
         private const val NOTIFICATION_ID = 101
@@ -143,6 +145,7 @@ class VibrateAwakeService : Service() {
                 putExtra(EXTRA_INTERVAL, config.intervalMinutes)
                 putExtra(EXTRA_PATTERN, config.pattern.ordinal)
                 putExtra(EXTRA_ROAD_NOISE, config.roadNoise.ordinal)
+                putExtra(EXTRA_DURATION_SCALE, config.durationScale)
             }
 
         fun stopIntent(context: Context): Intent =
