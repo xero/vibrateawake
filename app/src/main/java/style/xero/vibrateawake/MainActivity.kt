@@ -436,7 +436,7 @@ private fun PrivacyScreen(
         PrivacyBody(
             "Vibrate Awake is a vibration timer to help keep a drowsy driver awake. It does " +
                 "not collect, store off-device, use, sell, or transfer any personal data. It " +
-                "has no accounts, no analytics, no advertising, no network access, is totally free.",
+                "has no accounts, no analytics, no advertising, no network access, and is totally free.",
         )
 
         PrivacyRule()
