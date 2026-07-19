@@ -14,7 +14,8 @@
 
 <img src="./app/src/main/res/drawable-nodpi/ic_launcher_art.png" height="450" align="right">
 
-> [!WARNING]> ### Table of Contents
+> [!WARNING]
+> ### Table of Contents
 > - [What it does](#what-it-does)
 > - [Settings](#settings)
 > - [How it works](#how-it-works)
