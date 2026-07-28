@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Gradle dependencies (version catalog + module build scripts). Most alerts are
+  # build-time-only AGP tooling transitives that never ship in the APK; version PRs
+  # here mainly keep AGP, Kotlin, and the AndroidX runtime deps current.
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      gradle-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  # Keep the SHA-pinned GitHub Actions fresh (complements manual actions-up pinning).
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      actions-all:
+        patterns:
+          - "*"
