@@ -156,7 +156,12 @@ class VibrateAwakeService : Service() {
                 putExtra(EXTRA_DURATION_SCALE, config.durationScale)
             }
 
+        // Explicit by both component and package so the PendingIntent that wraps this
+        // (the notification's Stop action) can never resolve to another app (CWE-927).
         fun stopIntent(context: Context): Intent =
-            Intent(context, VibrateAwakeService::class.java).setAction(ACTION_STOP)
+            Intent(context, VibrateAwakeService::class.java).apply {
+                action = ACTION_STOP
+                setPackage(context.packageName)
+            }
     }
 }

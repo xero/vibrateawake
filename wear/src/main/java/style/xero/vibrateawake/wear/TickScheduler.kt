@@ -45,7 +45,12 @@ object TickScheduler {
     }
 
     private fun pending(context: Context, action: String, requestCode: Int): PendingIntent {
-        val intent = Intent(context, WatchVibrateService::class.java).setAction(action)
+        // Explicit intent: target our own service by both component and package so the
+        // PendingIntent can never resolve to another app (CWE-927,
+        // CodeQL java/android/implicit-pendingintents), and keep it immutable.
+        val intent = Intent(context, WatchVibrateService::class.java)
+        intent.action = action
+        intent.setPackage(context.packageName)
         return PendingIntent.getForegroundService(
             context,
             requestCode,
