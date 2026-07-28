@@ -1,0 +1,79 @@
+name: CodeQL
+
+# Advanced setup. The Kotlin app cannot be analyzed by default setup: autobuild picks
+# JDK 17 (this project needs JDK 21) and lacks the android-37.0 SDK platform, and
+# `build-mode: none` does not support Kotlin. So java-kotlin uses `build-mode: manual`
+# with the same toolchain as release.yml; the `actions` language needs no build.
+#
+# NOTE: GitHub default setup must be DISABLED for this workflow to run
+# (Settings > Code security > CodeQL analysis > switch to Advanced / disable Default).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "25 7 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: java-kotlin
+            build-mode: manual
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # --- Build toolchain, only needed for the manual Kotlin/Java build ---
+      - name: Set up JDK 21
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        if: matrix.language == 'java-kotlin'
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+
+      - name: Accept SDK licenses
+        if: matrix.language == 'java-kotlin'
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
+
+      - name: Install SDK packages
+        if: matrix.language == 'java-kotlin'
+        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+
+      - name: Set up Gradle
+        if: matrix.language == 'java-kotlin'
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@e58424170fb0262c8d7ed60a2e84b9bffe205c67 # codeql-bundle-v2.26.1
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Build (manual)
+        if: matrix.build-mode == 'manual'
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@e58424170fb0262c8d7ed60a2e84b9bffe205c67 # codeql-bundle-v2.26.1
+        with:
+          category: "/language:${{ matrix.language }}"
