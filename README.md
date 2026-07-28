@@ -26,7 +26,7 @@
 > - [Build and run](#build-and-run)
 > - [Toolchain](#toolchain)
 > - [Design notes](#design-notes)
-> - [Privacy](#privacy)
+> - [Privacy & security](#privacy--security)
 > - [License](#license)
 
 ---
@@ -267,11 +267,13 @@ and silently no-ops when no watch is connected.
 
 ---
 
-## Privacy
+## Privacy & security
 
 Vibrate Awake collects no data, has no network access, and contains no ads or
 tracking. Your settings stay in the app's private storage on the device. See
 [PRIVACY.md](./PRIVACY.md), or the in app screen, for the full policy.
+
+Full policies: [Privacy Policy](./PRIVACY.md) and [Security Policy](./SECURITY.md).
 
 ---
 

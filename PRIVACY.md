@@ -90,5 +90,6 @@ before that change ships, and the "Last updated" date above will change with it.
 
 ## Contact
 
-Questions about this policy can go to the project's GitHub issues, or by email to
-x@xero.style.
+Questions about this policy can go to the project's GitHub issues or [directly
+communicated](SECURITY.md#direct-contact). To report a security vulnerability,
+follow the [Security Policy](./SECURITY.md) instead of opening a public issue.
