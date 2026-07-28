@@ -45,11 +45,11 @@ The published Play Store listing text lives in
 [store/listing/full-description.txt](./store/listing/full-description.txt), with
 the short description and title alongside it.
 
-- **Fires immediately.** Start plays your chosen pattern at once, so you feel exactly what you picked before setting off.
+- **Fires immediately.** Start plays your chosen pattern at once, so you feel exactly what you picked.
 - **Runs locked.** A foreground service keeps the vibration going with the screen off and the phone locked.
 - **Buzzes your watch too.** If a Wear OS watch is paired, the companion buzzes your wrist on the same schedule, with no setup and no extra taps. See [Wear OS companion](#wear-os-companion).
 - **Fights habituation.** The interval is jittered by up to 15 seconds each cycle so your brain cannot anticipate the buzz, and a faint pre-warn pulse fires about 15 seconds before each main alert so a hard buzz never startles you mid-steer.
-- **Greyscale with an orange accent.** A black-and-white UI that follows the system light or dark setting. A fixed orange (`#D16A00`) picks out the title, the slider fills, the selected options, and the Stop button while running. The title and Start/Stop button use the embedded Thunderline font; everything else is Roboto.
+- **Greyscale with an orange accent.** A black-and-white UI that follows the system light or dark setting. A fixed orange ![#D16A00](https://img.shields.io/badge/%23D16A00%20-%20%23D16A00?style=flat-square&color=%23D16A00) picks out the title, the slider fills, the selected options, and the Stop button while running. The title and Start/Stop button use the embedded Thunderline font; everything else is Roboto.
 
 ---
 
@@ -195,7 +195,8 @@ vibrateawake/
 ## Build and run
 
 ```sh
-./gradlew assembleDebug          # builds :core, :app, and :wear
+# builds :core, :app, and :wear
+./gradlew assembleDebug
 ```
 
 The debug APKs land at `app/build/outputs/apk/debug/app-debug.apk` and
@@ -220,8 +221,7 @@ A phone emulator `pixel7_api36` and a Wear OS emulator `wear_api34` are
 also available:
 
 ```sh
-emulator -avd pixel7_api36 &
-adb wait-for-device
+emulator -avd pixel7_api36 & adb wait-for-device
 ./gradlew :app:installDebug
 ```
 
@@ -234,16 +234,17 @@ and silently no-ops when no watch is connected.
 
 ## Toolchain
 
-| Component   | Version    |
-| ----------- | ---------- |
-| AGP         | 9.3.0      |
-| Kotlin      | 2.2.10     |
-| Gradle      | 9.6.1      |
-| JDK         | 21         |
-| Compose BOM | 2026.06.01 |
-| compileSdk  | 37         |
-| minSdk      | 26         |
-| targetSdk   | 36         |
+| Component          | Version    |
+| ------------------ | ---------- |
+| AGP                | 9.3.1      |
+| Kotlin             | 2.2.10     |
+| Gradle             | 9.6.1      |
+| JDK                | 21         |
+| Compose BOM        | 2026.06.01 |
+| compileSdk         | 37         |
+| targetSdk          | 36         |
+| minSdk (app, core) | 26         |
+| minSdk (wear)      | 30         |
 
 ---
 
@@ -270,10 +271,9 @@ and silently no-ops when no watch is connected.
 ## Privacy & security
 
 Vibrate Awake collects no data, has no network access, and contains no ads or
-tracking. Your settings stay in the app's private storage on the device. See
-[PRIVACY.md](./PRIVACY.md), or the in app screen, for the full policy.
+tracking. Your settings stay in the app's private storage on the device.
 
-Full policies: [Privacy Policy](./PRIVACY.md) and [Security Policy](./SECURITY.md).
+See: [Privacy Policy](./PRIVACY.md) and [Security Policy](./SECURITY.md).
 
 ---
 
