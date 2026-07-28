@@ -2,13 +2,11 @@
 
 ![Vibrate Awake](./store/feature-graphic.png)
 
-> A simple, offline Android app that buzzes your phone on a set interval to help
-> you stay alert on long drives, night shifts, and late trips home. Set it once,
-> press Start, and put the phone down; a foreground service keeps it vibrating
-> even with the screen off and locked, until you press Stop. If a Wear OS watch
-> is paired, it buzzes your wrist on the same schedule too, automatically. Nothing
-> to tap or dismiss while you drive. This file documents what it does, how it is
-> built, and how to run it.
+> A simple, offline Android app that buzzes your phone on an interval to help
+> you stay alert on long drives or night shifts. Set it then put the phone in
+> your pocket; a foreground service keeps it vibrating even with the screen off
+> and locked. If a Wear OS watch is paired, it buzzes your wrist on the same
+> schedule, automatically. With nothing to tap or dismiss to distract you.
 
 ---
 
@@ -21,7 +19,9 @@
 > - [How it works](#how-it-works)
 > - [Wear OS companion](#wear-os-companion)
 > - [Screenshots](#screenshots)
-> - [Play Store beta testing](#play-store-beta-testing)
+> - [Installing](#installing)
+>   - [Play Store beta testing](#play-store-beta-testing)
+>   - [Sideloading](#sideloading)
 > - [Project layout](#project-layout)
 > - [Build and run](#build-and-run)
 > - [Toolchain](#toolchain)
@@ -33,13 +33,13 @@
 
 ## What it does
 
-The whole app is one screen: a settings form with four knobs and a large
-Start/Stop button across the bottom. Press Start and it buzzes your phone on
-your chosen interval to help you stay alert on long drives, night shifts, and
-late trips home. Press Stop, in the app or from the notification, and it ends.
+The whole app is one screen: a settings form with four options and a large
+Start/Stop button across the bottom. Press Start and it vibrates your phone on
+the chosen interval to help you stay alert on long drives or night shifts.
+Press Stop, in the app or from the notification, and the cycle ends.
 
 The design is deliberately distraction-free. There is nothing to tap or dismiss
-while you drive. It just vibrates.
+_It just vibrates._
 
 The published Play Store listing text lives in
 [store/listing/full-description.txt](./store/listing/full-description.txt), with
@@ -112,7 +112,11 @@ Notification mirroring, the "post a high-priority notification and let the phone
 
 ---
 
-## Play Store beta testing
+## Installing
+
+If you don't want to clone the repo and build it yourself, I've provided two installation methods:
+
+### Play Store beta testing
 
 The app is in closed testing on Google Play, so access is invite-only and takes two steps.
 
@@ -130,12 +134,11 @@ The Play links only work for accounts that have joined the group first.
 
 ### Sideloading
 
-If you would rather not go through Google Play, signed APKs are published on the
-[Releases page](https://github.com/xero/vibrateawake/releases). Download
+If you would rather not go through Google Play, signed APKs are published on
+the [Releases page](https://github.com/xero/vibrateawake/releases). Download
 `VibrateAwake-<version>.apk` (and `VibrateAwake-Wear-<version>.apk` for a watch),
 enable installing from unknown sources, and install. These builds carry a
-different signature than the Play version, so install from one channel or the
-other, not both.
+different signature than the Play version, so install from one channel or the other.
 
 ---
 
@@ -192,7 +195,6 @@ vibrateawake/
 ## Build and run
 
 ```sh
-cd ~/.local/src/vibrateawake
 ./gradlew assembleDebug          # builds :core, :app, and :wear
 ```
 
@@ -212,10 +214,9 @@ Install the watch app on a paired Wear OS device or emulator:
 ./gradlew :wear:installDebug
 ```
 
-The physical test device is a Pixel 6 connected over Wi-Fi, because the
-Jamf-managed Mac blocks USB media. Reconnect it with `adb mdns services` then
-`adb devices`. The full ADB workflow is in the ADB cheatsheet in the Atlas
-notes. A phone emulator `pixel7_api36` and a Wear OS emulator `wear_api34` are
+Connect a test device with `adb mdns services` then `adb devices`.
+
+A phone emulator `pixel7_api36` and a Wear OS emulator `wear_api34` are
 also available:
 
 ```sh
@@ -232,12 +233,6 @@ and silently no-ops when no watch is connected.
 ---
 
 ## Toolchain
-
-Installed with Homebrew on Apple Silicon. The Android SDK lives at
-`~/.local/share/android/sdk` under `$XDG_DATA_HOME`. The build pins JDK 21;
-Homebrew pulled in JDK 26 as a `gradle` dependency, but AGP 9.3.0 is not
-validated against 26. The relevant environment lives in
-`~/.config/zsh/01-environment.zsh`.
 
 | Component   | Version    |
 | ----------- | ---------- |
@@ -262,7 +257,7 @@ validated against 26. The relevant environment lives in
 
 **Shared `:core` module.** The config model and its waveform builder (`VibrationConfig.buildWaveform()`) live in a small library both the phone and watch depend on, so the two never drift as the rhythms are tuned. The watch layers its own `AlarmManager` loop and an amplitude-control fallback on top of that shared code; see [Wear OS companion](#wear-os-companion).
 
-**Greyscale with an orange accent.** Material You dynamic color is turned off. The scheme maps background and text to black, white, and off-tones (`#222` and `#efefef`), and `surfaceVariant` and related roles are pinned to greys so nothing leaks the default purple tint. The one accent is orange (`#D16A00`, chosen to read on both black and white): the title, the slider active fill, selected radio buttons, and the Stop button while running. Locked controls dim, and a selected control's orange fades to `#BE5900`.
+**Greyscale with an orange accent.** The scheme maps background and text to black, white, and off-tones (`#222` and `#efefef`), and `surfaceVariant` and related roles are pinned to greys so nothing leaks the default purple tint. The one accent is orange (`#D16A00`, chosen to read on both black and white): the title, the slider active fill, selected radio buttons, and the Stop button while running. Locked controls dim, and a selected control's orange fades to `#BE5900`.
 
 **Portrait lock.** `MainActivity` sets `android:screenOrientation="portrait"`. The single-column form is built for portrait and this is a set-and-forget utility, so the app stays upright instead of reflowing awkwardly in landscape.
 
@@ -276,7 +271,7 @@ validated against 26. The relevant environment lives in
 
 Vibrate Awake collects no data, has no network access, and contains no ads or
 tracking. Your settings stay in the app's private storage on the device. See
-[PRIVACY.md](./PRIVACY.md) for the full policy.
+[PRIVACY.md](./PRIVACY.md), or the in app screen, for the full policy.
 
 ---
 

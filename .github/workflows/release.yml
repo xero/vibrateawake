@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, e.g. v1.2"
+        description: "Release tag (e.g. v1.2)"
         required: true
         type: string
       prerelease:
@@ -36,8 +36,6 @@ jobs:
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Install SDK packages
-        # compileSdk 37 resolves to the minor-versioned platform android-37.0 (there is no
-        # bare "android-37" package); AGP 9.3.0's default build-tools is 36.0.0.
         run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
 
       - name: Set up Gradle
@@ -85,7 +83,12 @@ jobs:
             dist/VibrateAwake-Wear-${{ inputs.tag }}.apk
             dist/SHA256SUMS.txt
           body: |
-            Sideload builds of **Vibrate Awake ${{ inputs.tag }}**
+            <img src="./app/src/main/res/drawable-nodpi/ic_launcher_art.png" height="210" align="right">
+
+            > [!NOTE]
+            > A simple, offline Android app that buzzes your phone on an interval to help you stay alert on long drives or night shifts. Set it then put the phone in your pocket; a foreground service keeps it vibrating even with the screen off and locked. If a Wear OS watch is paired, it buzzes your wrist on the same schedule, automatically. With nothing to tap or dismiss to distract you.
+
+            # Vibrate Awake _${{ inputs.tag }}_ sideload builds
 
             - `VibrateAwake-${{ inputs.tag }}.apk`: Android app
             - `VibrateAwake-Wear-${{ inputs.tag }}.apk`: Wear OS companion
@@ -93,6 +96,8 @@ jobs:
 
             > [!IMPORTANT]
             > Builds are signed with a project key. The signature doesn't match the Google Play build, so install from only one channel.
+
+            ![Vibrate Awake](./store/feature-graphic.png)
 
       - name: Clean up secrets
         if: always()
