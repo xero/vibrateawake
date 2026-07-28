@@ -221,7 +221,8 @@ A phone emulator `pixel7_api36` and a Wear OS emulator `wear_api34` are
 also available:
 
 ```sh
-emulator -avd pixel7_api36 & adb wait-for-device
+emulator -avd pixel7_api36 & # background process
+adb wait-for-device
 ./gradlew :app:installDebug
 ```
 

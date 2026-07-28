@@ -1,0 +1,65 @@
+# =============================================================================
+# LINE ENDING NORMALIZATION
+# Default: auto-detect text and normalize it to LF everywhere (repo and working
+# tree), regardless of the contributor's platform or git config. Binaries and the
+# one Windows script are overridden below.
+# =============================================================================
+
+*                        text=auto eol=lf
+
+# Kotlin sources and Gradle build scripts
+*.kt                     text eol=lf
+*.kts                    text eol=lf
+
+# Android manifests, resources, and ProGuard rules
+*.xml                    text eol=lf
+*.pro                    text eol=lf
+
+# Config and data
+*.toml                   text eol=lf
+*.yml                    text eol=lf
+*.properties             text eol=lf
+
+# Shell scripts and the Gradle wrapper launcher (extensionless)
+*.sh                     text eol=lf
+gradlew                  text eol=lf
+
+# Docs and text
+*.md                     text eol=lf diff=markdown
+*.txt                    text eol=lf
+
+# Git dotfiles
+.gitattributes           text eol=lf
+.gitignore               text eol=lf
+
+# -----------------------------------------------------------------------------
+# EXCEPTION: Windows batch must keep CRLF or it misbehaves on Windows.
+# -----------------------------------------------------------------------------
+*.bat                    text eol=crlf
+
+# =============================================================================
+# BINARY
+# Never normalize line endings or diff these as text.
+# =============================================================================
+
+# Fonts
+*.ttf                    binary
+*.otf                    binary
+
+# Images
+*.png                    binary
+*.webp                   binary
+*.jpg                    binary
+*.jpeg                   binary
+*.gif                    binary
+*.ico                    binary
+
+# Java/Android archives and artifacts
+*.jar                    binary
+*.aar                    binary
+*.apk                    binary
+*.aab                    binary
+
+# Signing material (gitignored, but never treat as text if present)
+*.jks                    binary
+*.keystore               binary
