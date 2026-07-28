@@ -8,6 +8,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # The Compose compiler plugin version is pinned to the Kotlin that AGP bundles
+      # (see gradle/libs.versions.toml) and is further gated by CodeQL's Kotlin
+      # extractor, which lags new Kotlin releases. Bump it manually alongside AGP,
+      # never via Dependabot.
+      - dependency-name: "org.jetbrains.kotlin.plugin.compose"
     groups:
       gradle-minor-patch:
         update-types:
