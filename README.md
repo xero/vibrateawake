@@ -128,6 +128,15 @@ The Play links only work for accounts that have joined the group first.
 > [!IMPORTANT]
 > We need 12 testers to keep the app installed for 14 days to pass beta testing and you only _need_ to run it once. Your testing support helps get this app to the Play Store as a free tool for everyone.
 
+### Sideloading
+
+If you would rather not go through Google Play, signed APKs are published on the
+[Releases page](https://github.com/xero/vibrateawake/releases). Download
+`VibrateAwake-<version>.apk` (and `VibrateAwake-Wear-<version>.apk` for a watch),
+enable installing from unknown sources, and install. These builds carry a
+different signature than the Play version, so install from one channel or the
+other, not both.
+
 ---
 
 ## Project layout
@@ -136,6 +145,7 @@ The Play links only work for accounts that have joined the group first.
 vibrateawake/
 ├── settings.gradle.kts               Root settings; includes :core, :app, :wear
 ├── build.gradle.kts                  Top-level plugin declarations
+├── .github/workflows/release.yml     On-demand CI: build + publish sideload APKs
 ├── gradle/
 │   ├── libs.versions.toml            Version catalog (single source of truth)
 │   └── wrapper/                      Pinned Gradle 9.6.1 wrapper

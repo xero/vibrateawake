@@ -1,0 +1,99 @@
+name: Release APKs
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, e.g. v1.2"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark as pre-release"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+
+      - name: Accept SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
+
+      - name: Install SDK packages
+        # compileSdk 37 resolves to the minor-versioned platform android-37.0 (there is no
+        # bare "android-37" package); AGP 9.3.0's default build-tools is 36.0.0.
+        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: Restore signing config
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PW: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PW: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > upload-keystore.jks
+          cat > keystore.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$KS_PW
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PW
+          EOF
+
+      - name: Build signed release APKs
+        run: ./gradlew :app:assembleRelease :wear:assembleRelease --no-daemon
+
+      - name: Stage and checksum artifacts
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/VibrateAwake-$TAG.apk"
+          cp wear/build/outputs/apk/release/wear-release.apk "dist/VibrateAwake-Wear-$TAG.apk"
+          (cd dist && sha256sum -- *.apk > SHA256SUMS.txt)
+
+      - name: Verify signature
+        run: |
+          BT=$(find "$ANDROID_HOME/build-tools" -maxdepth 1 -mindepth 1 -type d | sort -V | tail -1)
+          "$BT/apksigner" verify --print-certs "dist/VibrateAwake-$TAG.apk"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          prerelease: ${{ inputs.prerelease }}
+          fail_on_unmatched_files: true
+          files: |
+            dist/VibrateAwake-${{ inputs.tag }}.apk
+            dist/VibrateAwake-Wear-${{ inputs.tag }}.apk
+            dist/SHA256SUMS.txt
+          body: |
+            Sideload builds of **Vibrate Awake ${{ inputs.tag }}**
+
+            - `VibrateAwake-${{ inputs.tag }}.apk`: Android app
+            - `VibrateAwake-Wear-${{ inputs.tag }}.apk`: Wear OS companion
+            - `SHA256SUMS.txt`: build checksums
+
+            > [!IMPORTANT]
+            > Builds are signed with a project key. The signature doesn't match the Google Play build, so install from only one channel.
+
+      - name: Clean up secrets
+        if: always()
+        run: rm -f upload-keystore.jks keystore.properties
